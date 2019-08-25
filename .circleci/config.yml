@@ -4,9 +4,6 @@ executors:
   default:
     docker:
       - image: circleci/node:10.16-browsers-legacy
-    working_directory: ~/e2e
-  deploy:
-    docker:
       - image: circleci/python:3.6.5
 
 jobs:
@@ -21,15 +18,22 @@ jobs:
       - checkout
       - run: yarn install
       - run: yarn build
+      - persist_to_workspace:
+          root: .
+          paths: .
 
   test:
     executor: default
     steps:
+      - attach_workspace:
+          at: .
       - run: yarn test
 
   deploy-master:
-    executor: deploy
+    executor: default
     steps:
+      - attach_workspace:
+          at: .
       - run: sudo pip install awscli
       - run: yarn deploy
 
