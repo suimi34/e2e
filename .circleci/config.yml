@@ -4,6 +4,9 @@ executors:
   default:
     docker:
       - image: circleci/node:10.16-browsers-legacy
+
+  deploy:
+    docker:
       - image: circleci/python:3.6.5
 
 jobs:
@@ -30,12 +33,12 @@ jobs:
       - run: yarn test
 
   deploy-master:
-    executor: default
+    executor: deploy
     steps:
       - attach_workspace:
           at: .
       - run: sudo pip install awscli
-      - run: yarn deploy
+      - run: aws s3 sync build/ s3://reacte2e --delete
 
 workflows:
   version: 2
