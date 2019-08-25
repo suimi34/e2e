@@ -38,5 +38,9 @@ workflows:
   deploy:
     jobs:
       - build-master
-      - test
+      - test:
+        requires:
+          - build-master
       - deploy-master
+        requires:
+          - test
