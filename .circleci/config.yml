@@ -1,33 +1,42 @@
-version: 2
+version: 2.1
+
+executors:
+  default:
+    docker:
+      - image: circleci/node:10.16-browsers-legacy
+    working_directory: ~/e2e
+  deploy:
+    docker:
+      - image: circleci/python:3.6.5
+
 jobs:
   build:
-    docker:
-      # specify the version you desire here
-      - image: circleci/node:10.16-browsers-legacy
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
-    working_directory: ~/e2e
-
+    executor: default
     steps:
       - checkout
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
+  build-master:
+    executor: default
+    steps:
+      - checkout
       - run: yarn install
+      - run: yarn build
 
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-
-      # run tests!
+  test:
+    executor: default
+    steps:
       - run: yarn test
+
+  deploy-master:
+    executor: deploy
+    steps:
+      - run: sudo pip install awscli
+      - run: yarn deploy
+
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - build-master
+      - test
+      - deploy-master
