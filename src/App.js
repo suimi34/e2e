@@ -1,12 +1,14 @@
 import React from "react";
 import { BrowserRouter, Route } from "react-router-dom";
+import Login from "./components/Login";
 import "./App.css";
 
 const App = () => (
   <BrowserRouter>
     <div>
       <Route exact path="/" component={Home} />
-      <Route path="/about" component={About} />
+      <Route path="/login" component={Login} />
+      <Route path="/top" component={Main} />
     </div>
   </BrowserRouter>
 );
@@ -16,10 +18,9 @@ const Home = () => (
     <h2>home</h2>
   </div>
 );
-
-const About = () => (
+const Main = () => (
   <div>
-    <h2>about</h2>
+    <h2>Main</h2>
   </div>
 );
 
