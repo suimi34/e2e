@@ -15,7 +15,7 @@ const App = () => (
 
 const Home = () => (
   <div>
-    <h2>home</h2>
+    <h2>もりけんサイズ</h2>
   </div>
 );
 const Main = () => (
